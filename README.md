@@ -16,6 +16,8 @@ From a browser or terminal on the same network, open `http://<kettle-ip>/cli?cmd
 
 ## Install with Homebridge UI
 
+This method requires the npm release. If the plugin is not yet listed in search, use the GitHub install below.
+
 1. Open Homebridge, then **Plugins**.
 2. Search for **`homebridge-fellow-ekg`** and install it.
 3. Open the plugin's **Settings**. Enter the kettle's IP address in **Kettle IP address or hostname**. Leave port `80` and poll interval `30` unless your setup differs.
@@ -36,9 +38,18 @@ If you configure Homebridge by editing `config.json`, add this object to its top
 
 Replace `192.168.1.50` with your kettle's IP. `host` is an IP address or hostname only, without `http://`, a port suffix, or `/cli`. Restart Homebridge after saving the config.
 
-## Install from source
+## Install from GitHub
 
-For development or before an npm release, clone this repository and install it in the same npm environment as Homebridge:
+On the official Homebridge Raspberry Pi image or a Linux service using `/var/lib/homebridge` as its plugin directory, open the Homebridge **Terminal** and run:
+
+```sh
+sudo npm install --prefix /var/lib/homebridge git+https://github.com/GautamBose/homebridge-fellow-ekg.git#v1.0.0
+sudo hb-service restart
+```
+
+Then set the kettle IP in the plugin settings or add the `platforms` entry shown above. This GitHub install was tested in a clean npm environment. Check your Homebridge plugin directory before using these commands on other installation types.
+
+For development, clone this repository and install it in the same npm environment as Homebridge:
 
 ```sh
 git clone https://github.com/GautamBose/homebridge-fellow-ekg.git
@@ -47,7 +58,7 @@ npm test
 npm install -g .
 ```
 
-Some Homebridge images keep plugins in a separate directory and recommend installing through the Homebridge UI or `hb-service add`. On those systems, use the published npm package once available; a global `npm install` in another Node.js environment may not be discovered by Homebridge.
+A global `npm install` in another Node.js environment may not be discovered by a Homebridge service.
 
 ## Behavior and limits
 
