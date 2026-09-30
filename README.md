@@ -4,19 +4,38 @@ An on/off switch for Fellow kettles that expose the local HTTP CLI. The switch a
 
 This is an unofficial integration. It uses the protocol documented by [rderewianko/fellow-ekg](https://github.com/rderewianko/fellow-ekg), an Unlicense Home Assistant project. This Homebridge plugin is a separate JavaScript implementation.
 
+**You can install this directly from GitHub now.** An npm release is only needed for the Homebridge Plugins search and install flow; see [Install from GitHub](#install-from-github).
+
 ## Before you install
 
 You need:
 
 - A working Homebridge installation with Node.js 18.17 or newer.
 - A Fellow kettle whose firmware responds to `http://<kettle-ip>/cli?cmd=state` on your local network. This is **not** a Bluetooth plugin, and it will not work with a kettle that lacks the HTTP CLI.
-- The kettle's local IP address, found in your router's connected-device or DHCP list. Reserve that address in your router so it does not change.
+- The kettle's local IP address. Reserve that address in your router so it does not change.
 
-From a browser or terminal on the same network, open `http://<kettle-ip>/cli?cmd=state`. A compatible response contains a line such as `mode=S_Off` or `mode=S_Hold`. Do this read-only check before installing. Replace `<kettle-ip>` with your own address; do not type the angle brackets.
+## Find and verify the kettle IP
+
+Look in your router's connected-device or DHCP list. The kettle may appear with a device name or manufacturer resembling **Espressif** (sometimes shown as “expressif”). That is a clue, not proof: verify the address with the kettle endpoint.
+
+You can also use a LAN scanner such as **LanScan** or **Fing**. From a terminal on the same network, `arp -a` lists devices already seen by your computer. If you have `nmap` installed, scan your own subnet, replacing the example range with your network's range:
+
+```sh
+arp -a
+nmap -sn 192.168.1.0/24
+```
+
+For each likely IP, run the read-only check from the **Homebridge host** (or open the URL in a browser on the same network):
+
+```sh
+curl -fsS 'http://192.168.1.50/cli?cmd=state'
+```
+
+Replace `192.168.1.50` with the candidate IP. A compatible kettle response contains a line such as `mode=S_Off` or `mode=S_Hold`. Do not use a scanner's name or vendor label alone as confirmation.
 
 ## Install with Homebridge UI
 
-This method requires the npm release. If the plugin is not yet listed in search, use the GitHub install below.
+This method requires the npm release. Until then, use the GitHub install below.
 
 1. Open Homebridge, then **Plugins**.
 2. Search for **`homebridge-fellow-ekg`** and install it.
@@ -40,7 +59,7 @@ Replace `192.168.1.50` with your kettle's IP. `host` is an IP address or hostnam
 
 ## Install from GitHub
 
-On the official Homebridge Raspberry Pi image or a Linux service using `/var/lib/homebridge` as its plugin directory, open the Homebridge **Terminal** and run:
+This works without an npm release. On the official Homebridge Raspberry Pi image or a Linux service using `/var/lib/homebridge` as its plugin directory, open the Homebridge **Terminal** and run:
 
 ```sh
 sudo npm install --prefix /var/lib/homebridge git+https://github.com/GautamBose/homebridge-fellow-ekg.git#v1.0.0
@@ -48,6 +67,14 @@ sudo hb-service restart
 ```
 
 Then set the kettle IP in the plugin settings or add the `platforms` entry shown above. This GitHub install was tested in a clean npm environment. Check your Homebridge plugin directory before using these commands on other installation types.
+
+### Checklist for an installing agent
+
+1. Determine the Homebridge plugin directory. Use `/var/lib/homebridge` only if that is the service's actual plugin directory; a global npm install elsewhere may not be loaded.
+2. Find the kettle IP using the router, LanScan, Fing, `arp -a`, or a scan of the user's own subnet. Treat “Espressif”/“expressif” as a lead. Confirm the candidate with `curl -fsS 'http://IP/cli?cmd=state'` **from the Homebridge host** and require a `mode=` line.
+3. Install the pinned GitHub tag with the command above, substituting the correct plugin directory if needed. Verify with `npm ls --prefix /var/lib/homebridge homebridge-fellow-ekg --depth=0` when that directory applies.
+4. Set `host` to the confirmed IP in the `FellowEKG` platform config. It must contain only the IP or hostname, without `http://`, a port, or `/cli`.
+5. Restart Homebridge. Check its logs for `homebridge-fellow-ekg.FellowEKG` and its Accessories screen for the **Fellow Kettle** switch. Read its state before trying an on/off action.
 
 For development, clone this repository and install it in the same npm environment as Homebridge:
 
