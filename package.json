@@ -1,0 +1,26 @@
+{
+  "name": "homebridge-fellow-ekg",
+  "displayName": "Fellow EKG Kettle",
+  "version": "1.0.0",
+  "description": "HomeKit on/off switch for Fellow EKG kettles with the local HTTP CLI",
+  "main": "index.js",
+  "files": ["index.js", "kettle-client.js", "config.schema.json", "README.md", "LICENSE"],
+  "license": "MIT",
+  "author": "Gautam Bose",
+  "homepage": "https://github.com/GautamBose/homebridge-fellow-ekg#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GautamBose/homebridge-fellow-ekg.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GautamBose/homebridge-fellow-ekg/issues"
+  },
+  "engines": {
+    "node": ">=18.17.0",
+    "homebridge": ">=1.6.0"
+  },
+  "keywords": ["homebridge-plugin", "supports-hap", "fellow", "ekg", "stagg", "kettle", "homekit"],
+  "scripts": {
+    "test": "node --test"
+  }
+}

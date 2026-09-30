@@ -1,0 +1,24 @@
+name: Test and package
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm test
+      - name: Check installable package
+        run: |
+          mkdir -p "$RUNNER_TEMP/consumer"
+          npm pack --pack-destination "$RUNNER_TEMP"
+          npm install --prefix "$RUNNER_TEMP/consumer" "$RUNNER_TEMP"/homebridge-fellow-ekg-*.tgz
+          node -e "require('$RUNNER_TEMP/consumer/node_modules/homebridge-fellow-ekg')"

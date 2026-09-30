@@ -1,0 +1,15 @@
+{
+  "pluginAlias": "FellowEKG",
+  "pluginType": "platform",
+  "singular": true,
+  "schema": {
+    "type": "object",
+    "required": ["host"],
+    "properties": {
+      "name": { "title": "Accessory name", "type": "string", "default": "Fellow Kettle" },
+      "host": { "title": "Kettle IP address or hostname", "type": "string", "placeholder": "192.168.1.50" },
+      "port": { "title": "HTTP port", "type": "integer", "minimum": 1, "maximum": 65535, "default": 80 },
+      "pollInterval": { "title": "Poll interval (seconds)", "type": "integer", "minimum": 5, "maximum": 300, "default": 30 }
+    }
+  }
+}
